@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.jpeg">
+  <link rel="icon" href="/img/avatar.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="朵朵爸比">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="参考：https:&#x2F;&#x2F;source.android.com&#x2F;setup&#x2F;starthttps:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;AOSP&#x2F;   官方提示：自 2021 年 6 月 22 日起，我们不再支持在 MacOS 上进行平台开发。 所以最新版的aosp源码不要在mac上编译。   1 下载repo工具123456789mkdir ~&#x2F;binPATH&#x3D;~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="macOS Monterey编译Android10">
+<meta property="og:url" content="http://example.com/2022/03/08/macOS-Monterey%E7%BC%96%E8%AF%91Android10/index.html">
+<meta property="og:site_name" content="朵朵爸比">
+<meta property="og:description" content="参考：https:&#x2F;&#x2F;source.android.com&#x2F;setup&#x2F;starthttps:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;help&#x2F;AOSP&#x2F;   官方提示：自 2021 年 6 月 22 日起，我们不再支持在 MacOS 上进行平台开发。 所以最新版的aosp源码不要在mac上编译。   1 下载repo工具123456789mkdir ~&#x2F;binPATH&#x3D;~">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-08T06:08:15.000Z">
+<meta property="article:modified_time" content="2023-07-09T14:20:47.901Z">
+<meta property="article:author" content="朵朵爸比">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>macOS Monterey编译Android10 - 朵朵爸比</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"a9e9c83d902b6a7252208eeb342a8008","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <header style="height: 50vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>朵朵爸比</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="macOS Monterey编译Android10">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-08 14:08" pubdate>
+        2022年3月8日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      63 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">macOS Monterey编译Android10</h1>
+            
+            <div class="markdown-body">
+              <blockquote>
+<p>参考：<br><a target="_blank" rel="noopener" href="https://source.android.com/setup/start">https://source.android.com/setup/start</a><br><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/">https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/</a></p>
+</blockquote>
+<font color="red" size="4">
+官方提示：自 2021 年 6 月 22 日起，我们不再支持在 MacOS 上进行平台开发。
+所以最新版的aosp源码不要在mac上编译。
+</font>
+
+<h1 id="1-下载repo工具"><a href="#1-下载repo工具" class="headerlink" title="1 下载repo工具"></a>1 下载repo工具</h1><figure class="highlight bash"><table><tr><td class="gutter"><div class="code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> ~/bin<br>PATH=~/bin:<span class="hljs-variable">$PATH</span><br>curl https://storage.googleapis.com/git-repo-downloads/repo &gt; ~/bin/repo<br><span class="hljs-built_in">chmod</span> a+x ~/bin/repo<br><br>vi .bash_profile<br><span class="hljs-comment"># repo的运行过程中会尝试访问官方的git源更新自己，使用tuna的镜像源进行更新</span><br><span class="hljs-built_in">export</span> REPO_URL=<span class="hljs-string">&#x27;https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&#x27;</span><br><span class="hljs-built_in">source</span> .bash_profile<br></code></pre></td></tr></table></figure>
+
+<h1 id="2-下载源码"><a href="#2-下载源码" class="headerlink" title="2 下载源码"></a>2 下载源码</h1><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">mkdir aosp<br>cd aosp<br><span class="hljs-comment"># https://android.googlesource.com/platform/manifest</span><br>repo init -u https:<span class="hljs-regexp">//mi</span>rrors.tuna.tsinghua.edu.cn<span class="hljs-regexp">/git/</span>AOSP<span class="hljs-regexp">/platform/m</span>anifest -b android-<span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>_r2<br>repo sync<br></code></pre></td></tr></table></figure>
+
+<h1 id="3-下载驱动"><a href="#3-下载驱动" class="headerlink" title="3 下载驱动"></a>3 下载驱动</h1><p><a target="_blank" rel="noopener" href="https://developers.google.com/android/drivers">https://developers.google.com/android/drivers</a><br><a target="_blank" rel="noopener" href="https://developers.google.com/android/drivers#bluelineqp1a.190711.020">https://developers.google.com/android/drivers#bluelineqp1a.190711.020</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 将下载好的驱动放到android源码目录</span><br>tar zxvf google_devices-blueline-qp1a.190711.020-1e75681a.tgz<br>tar zxvf qcom-blueline-qp1a.190711.020-fa3a35b0.tgz<br>./extract-google_devices-blueline.sh<br>./extract-qcom-blueline.sh<br><span class="hljs-comment"># 解压之后会在源码目录创建vendor文件夹</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="4-构建源码"><a href="#4-构建源码" class="headerlink" title="4 构建源码"></a>4 构建源码</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> build/envsetup.sh<br>lunch aosp_blueline-userdebug<br>m<br></code></pre></td></tr></table></figure>
+
+<h1 id="5-刷机"><a href="#5-刷机" class="headerlink" title="5 刷机"></a>5 刷机</h1><p>参考：<a target="_blank" rel="noopener" href="https://source.android.com/setup/build/running">https://source.android.com/setup/build/running</a></p>
+<p>直接用编译输出的文件刷机</p>
+<p>ANDROID_PRODUCT_OUT&#x3D;&#x2F;Volumes&#x2F;mac&#x2F;Android&#x2F;aosp&#x2F;out&#x2F;target&#x2F;product&#x2F;blueline</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">已解锁引导加载程序</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">echo</span> <span class="hljs-variable">$ANDROID_PRODUCT_OUT</span></span><br>adb reboot bootloader<br>fastboot flashall -w<br></code></pre></td></tr></table></figure>
+<p>生成刷机文件并刷机</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">zip images.zip out<span class="hljs-regexp">/target/</span>product<span class="hljs-regexp">/blueline/</span>*.img out<span class="hljs-regexp">/target/</span>product<span class="hljs-regexp">/blueline/</span>android-info.txt<br>fastboot -w update images.zip <br><br>zip -j images.zip out<span class="hljs-regexp">/target/</span>product<span class="hljs-regexp">/blueline/</span>*.img out<span class="hljs-regexp">/target/</span>product<span class="hljs-regexp">/blueline/</span>android-info.txt<br></code></pre></td></tr></table></figure>
+
+<h1 id="6-遇到的问题："><a href="#6-遇到的问题：" class="headerlink" title="6 遇到的问题："></a>6 遇到的问题：</h1><h2 id="6-1-Could-not-find-a-supported-mac-sdk"><a href="#6-1-Could-not-find-a-supported-mac-sdk" class="headerlink" title="6.1 Could not find a supported mac sdk"></a>6.1 Could not find a supported mac sdk</h2><p>网上有很多解决方法是修改&#x2F;build&#x2F;soong&#x2F;cc&#x2F;config&#x2F;x86_darwin_host.go文件，添加sdk版本号：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs awk">darwinSupportedSdkVersions = []string&#123;<br>        <span class="hljs-string">&quot;10.10&quot;</span>,<br>        <span class="hljs-string">&quot;10.11&quot;</span>,<br>        <span class="hljs-string">&quot;10.12&quot;</span>,<br>        <span class="hljs-string">&quot;10.13&quot;</span>,<br>        <span class="hljs-string">&quot;10.14&quot;</span>,<br>        <span class="hljs-string">&quot;12.1&quot;</span>, <span class="hljs-regexp">//</span> xcrun --show-sdk-version<br>    &#125;<br></code></pre></td></tr></table></figure>
+<p>最新的macOS版本的xocde sdk版本已经是12.x，直接修改x86_darwin_host.go文件会导致后续编译有各种各样的错误，比如<strong>PAGE_SIZE</strong>未定义。</p>
+<p>还有一种方法是去github下载支持版本的sdk，解压到以下目录：</p>
+<blockquote>
+<p>&#x2F;Applications&#x2F;Xcode.app&#x2F;Contents&#x2F;Developer&#x2F;Platforms&#x2F;MacOSX.platform&#x2F;Developer&#x2F;SDKs</p>
+</blockquote>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://github.com/phracker/MacOSX-SDKs/releases">https://github.com/phracker/MacOSX-SDKs/releases</a></p>
+<p>编译依然报错<strong>Could not find a supported mac sdk</strong>，通过x86_darwin_host.go源码可以看出是通过<strong>xcrun –sdk macosx10.11 –show-sdk-path</strong>命令来查找sdk路径的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span> &#123;<br>    ...<br>    pctx.VariableFunc(<span class="hljs-string">&quot;macSdkRoot&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(ctx android.PackageVarContext)</span></span> <span class="hljs-type">string</span> &#123;<br>        <span class="hljs-keyword">return</span> xcrunSdk(ctx, <span class="hljs-string">&quot;--show-sdk-path&quot;</span>)<br>    &#125;)<br>    ...<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">xcrunSdk</span><span class="hljs-params">(ctx android.PackageVarContext, arg <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">string</span> &#123;<br>    ...<br><br>    <span class="hljs-keyword">for</span> _, sdk := <span class="hljs-keyword">range</span> darwinSupportedSdkVersions &#123;<br>        bytes, err := exec.Command(xcrun, <span class="hljs-string">&quot;--sdk&quot;</span>, <span class="hljs-string">&quot;macosx&quot;</span>+sdk, arg).Output()<br>        <span class="hljs-keyword">if</span> err == <span class="hljs-literal">nil</span> &#123;<br>            <span class="hljs-keyword">return</span> strings.TrimSpace(<span class="hljs-type">string</span>(bytes))<br>        &#125;<br>    &#125;<br>    ctx.Errorf(<span class="hljs-string">&quot;Could not find a supported mac sdk: %q&quot;</span>, darwinSupportedSdkVersions)<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>运行命令xcrun –sdk macosx10.11 –show-sdk-path -n报错如下(<strong>-n参数不使用缓存</strong>)：</p>
+<blockquote>
+<p>2022-03-01 11:05:16.489 xcodebuild[61280:2221681] [MT] DVTSDK: Skipped SDK &#x2F;Applications&#x2F;Xcode.app&#x2F;Contents&#x2F;Developer&#x2F;Platforms&#x2F;MacOSX.platform&#x2F;Developer&#x2F;SDKs&#x2F;MacOSX10.11.sdk; its version (10.11) is below required minimum (11.0) for the macosx platform.</p>
+</blockquote>
+<p>xcode支持的最小版本号为11.0，那么我们修改一下支持的最新版本号为10.11，用xcode打开以下文件：<br>&#x2F;Applications&#x2F;Xcode.app&#x2F;Contents&#x2F;Developer&#x2F;Platforms&#x2F;MacOSX.platform&#x2F;Info.plist<br>修改MinimumSDKVersion为10.11（如果不能保存，先把Info.plist复制到用户名目录修改之后在覆盖原文件）。</p>
+<p>再次执行<strong>xcrun –sdk macosx10.11 –show-sdk-path -n</strong>，正常输出sdk路径。</p>
+<blockquote>
+<p>&#x2F;Applications&#x2F;Xcode.app&#x2F;Contents&#x2F;Developer&#x2F;Platforms&#x2F;MacOSX.platform&#x2F;Developer&#x2F;SDKs&#x2F;MacOSX10.11.sdk</p>
+</blockquote>
+<h2 id="6-2-ninja-build-stopped-subcommand-failed-或者too-many-open-files"><a href="#6-2-ninja-build-stopped-subcommand-failed-或者too-many-open-files" class="headerlink" title="6.2 ninja: build stopped: subcommand failed.或者too many open files"></a>6.2 ninja: build stopped: subcommand failed.或者too many open files</h2><p>文件句柄数不够，需要调高ulimit 里面的-n 的值。ulimit -n 5000即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ulimit</span> -a<br><span class="hljs-built_in">ulimit</span> -n<br><br>vi ~/.bash_profile<br><span class="hljs-built_in">ulimit</span> -n 5000<br><span class="hljs-built_in">source</span> ~/.bash_profile<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-3-x2F-bin-x2F-bash-line-1-70100-Segmentation-fault-11"><a href="#6-3-x2F-bin-x2F-bash-line-1-70100-Segmentation-fault-11" class="headerlink" title="6.3 &#x2F;bin&#x2F;bash: line 1: 70100 Segmentation fault: 11"></a>6.3 &#x2F;bin&#x2F;bash: line 1: 70100 Segmentation fault: 11</h2><blockquote>
+<p>&#x2F;bin&#x2F;bash: line 1: 70100 Segmentation fault: 11  ( out&#x2F;host&#x2F;darwin-x86&#x2F;bin&#x2F;sepolicy_tests -l out&#x2F;host&#x2F;darwin-x86&#x2F;lib64&#x2F;libsepolwrap.dylib -f out&#x2F;target&#x2F;product&#x2F;blueline&#x2F;obj&#x2F;ETC&#x2F;plat_file_contexts_intermediates&#x2F;plat_file_contexts -f out&#x2F;target&#x2F;product&#x2F;blueline&#x2F;obj&#x2F;ETC&#x2F;vendor_file_contexts_intermediates&#x2F;vendor_file_contexts -p out&#x2F;target&#x2F;product&#x2F;blueline&#x2F;obj&#x2F;ETC&#x2F;sepolicy_intermediates&#x2F;sepolicy )</p>
+</blockquote>
+<p>参考一下提交记录删除 stl: “libc++_static”,<br><a target="_blank" rel="noopener" href="https://android.googlesource.com/platform/system/sepolicy/+/1f944107a3341ab593c93bbdf09e22436cc0e3d3">https://android.googlesource.com/platform/system/sepolicy/+/1f944107a3341ab593c93bbdf09e22436cc0e3d3</a></p>
+<h2 id="6-4-macOS-DS-Store-导致打包镜像失败"><a href="#6-4-macOS-DS-Store-导致打包镜像失败" class="headerlink" title="6.4 macOS .DS_Store 导致打包镜像失败"></a>6.4 macOS .DS_Store 导致打包镜像失败</h2><p>编译基本完成，但是最后打包system.img文件时报错，报错内容如下：</p>
+<blockquote>
+<p>set_selinux_xattr: No such file or directory searching for label “&#x2F;.DS_Store”<br>e2fsdroid: No such file or directory while configuring the file system<br>10:00:38 ninja failed with: exit status 1</p>
+</blockquote>
+<p>.DS_Store 文件为macOS中存储文件夹界面展示相关的一些信息，在Finder中查看对应目录后可能会生成。解决方式：删除源码目录中的所有 .DS_Store，可通过如下命令进行统一清理</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">find</span> . -name <span class="hljs-string">&quot;.DS_Store&quot;</span>  | xargs -I &#123;&#125; rm &#123;&#125; <br></code></pre></td></tr></table></figure>
+
+<h2 id="6-5-Rebooting-into-fastboot-FAILED-remote-‘Unsupported-reboot-option-reboot-fastboot’"><a href="#6-5-Rebooting-into-fastboot-FAILED-remote-‘Unsupported-reboot-option-reboot-fastboot’" class="headerlink" title="6.5 Rebooting into fastboot FAILED (remote: ‘Unsupported reboot option reboot-fastboot’)"></a>6.5 Rebooting into fastboot FAILED (remote: ‘Unsupported reboot option reboot-fastboot’)</h2><p>先刷一下官方的10.0.0 (QP1A.190711.020, Sep 2019)镜像<br><a target="_blank" rel="noopener" href="https://developers.google.com/android/images">https://developers.google.com/android/images</a><br><a target="_blank" rel="noopener" href="https://dl.google.com/dl/android/aosp/blueline-qp1a.190711.020-factory-b5633fdf.zip">https://dl.google.com/dl/android/aosp/blueline-qp1a.190711.020-factory-b5633fdf.zip</a></p>
+<h2 id="6-6-我们构建的aosp选择的是userdebug类型，是具有root权限的。但是在启动frida中会报错："><a href="#6-6-我们构建的aosp选择的是userdebug类型，是具有root权限的。但是在启动frida中会报错：" class="headerlink" title="6.6 我们构建的aosp选择的是userdebug类型，是具有root权限的。但是在启动frida中会报错："></a>6.6 我们构建的aosp选择的是userdebug类型，是具有root权限的。但是在启动frida中会报错：</h2><blockquote>
+<p>Error: invalid address</p>
+</blockquote>
+<p>解决方法：<br>关闭SElinux</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># 查看SElinux状态 Enforcing</span><br><span class="hljs-attribute">getenforce</span><br><span class="hljs-comment"># 修改为 Permissive</span><br><span class="hljs-attribute">setenforce</span> <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="6-7-在mac-13-2-1-Ventura编译报错，diff-unrecognized-option-96-–old-line-format-x3D-Removed’"><a href="#6-7-在mac-13-2-1-Ventura编译报错，diff-unrecognized-option-96-–old-line-format-x3D-Removed’" class="headerlink" title="6.7 在mac 13.2.1 Ventura编译报错，diff: unrecognized option &#96;–old-line-format&#x3D;Removed’"></a>6.7 在mac 13.2.1 Ventura编译报错，diff: unrecognized option &#96;–old-line-format&#x3D;Removed’</h2><p>主要原因是升级到Ventura后新的diff命令不支持–old-line-format&#x3D;Removed。</p>
+<p>解决方案：</p>
+<p>用老的diff程序替换新的。在用户目录创建bin文件夹，复制diff到bin文件夹。将~&#x2F;bin添加到环境变量即可。如果找不到老的diff，直接创建一个diff文件，添加执行权限即可。</p>
+<h1 id="7-将源码导入到Android-Studio"><a href="#7-将源码导入到Android-Studio" class="headerlink" title="7 将源码导入到Android Studio"></a>7 将源码导入到Android Studio</h1><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">source</span> build/envsetup.sh<br># 编译生成 out<span class="hljs-regexp">/host/</span>darwin-x86<span class="hljs-regexp">/framework/i</span>degen.jar<br>mmm development<span class="hljs-regexp">/tools/i</span>degen/<br># 生成 android.ipr 和 android.iml<br>development<span class="hljs-regexp">/tools/i</span>degen/idegen.sh<br></code></pre></td></tr></table></figure>
+<p>排除不必要的模块，提高加载速度。打开android.iml, 找到excludeFolder属性，我们可以看到默认有一些模块是被排除了，不会被导入的。将下面内容添加到默认excludeFolder标签后面。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/abi&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/art&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/bionic&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/bootable&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/build&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/cts&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/dalvik&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/developers&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/development&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/device&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/docs&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/external&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/hardware&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/libcore&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/libnativehelper&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/ndk&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/out&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/pdk&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/prebuilts&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/sdk&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/system&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/tools&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/kernel&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/vendor&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/platform_testing&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/test&quot;</span>/&gt;<br>&lt;excludeFolder <span class="hljs-attribute">url</span>=<span class="hljs-string">&quot;file://<span class="hljs-variable">$MODULE_DIR</span>$/toolchain&quot;</span>/&gt;<br></code></pre></td></tr></table></figure>
+<p>使用Android Studio打开android.ipr文件即可。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/22/Ubuntu%E7%BC%96%E8%AF%91Android%E5%86%85%E6%A0%B8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Ubuntu编译Android内核</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"7a12d2f79ba635d67b93","clientSecret":"563ae68c60d3c3f01fd32052d8e39d7925eab7fa","repo":"duoduobabi.github.io","owner":"duoduobabi","admin":["duoduobabi"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '8c7051c754f8eb1e0c7b564a17b94855'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?a9e9c83d902b6a7252208eeb342a8008";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
